@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <style>
+      body {
+        display: flex;
+        margin: 0;
+      }
+      .halftone {
+        --dotscale: 0.5;
+        --dotcontrast: 100%;
+        --dotbrightness: 0.25;
+        --dotblur: 2px;
+
+        background: white;
+        position: relative;
+        filter: contrast(25000%);
+        overflow: hidden;
+        transform: translateZ(0);
+        margin: auto;
+        /* force a HW accelerated layer */
+      }
+
+      .halftone>img {
+        max-width: 1080px;
+        max-height: 100vh;
+        filter: contrast(var(--dotcontrast)) brightness(var(--dotbrightness)) blur(var(--dotblur));
+        display: block;
+        margin: auto;
+      }
+
+      .halftone::after {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        right: -100%;
+        bottom: -100%;
+        background-blend-mode: multiply;
+        background:
+          radial-gradient(8px 8px, cyan, white),
+          radial-gradient(8px 8px, magenta, white),
+          radial-gradient(8px 8px, yellow, white);
+        background-size: 8px 8px;
+        background-position: 0 -3px, -2px 0, 2px 0;
+        mix-blend-mode: screen;
+        pointer-events: none;
+        transform: rotate(11.25deg) scale(var(--dotscale));
+        z-index: 1;
+      }
+
+      fieldset>label {
+        display: block;
+        margin-bottom: 0.5em;
+      }
+    </style>
+    <script>
+  upload.addEventListener("input", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    img.src = URL.createObjectURL(file);
+  });
+</script>
+  </head>
+  <body>
+  <!-- https://marco.blog/en/2018/02/pure-css-halftone-effect/ -->
+  <fieldset>
+    <legend>Shoresh Halftone</legend>
+    <input type="file" id="upload" name="avatar" accept="image/png, image/jpeg" />
+    <label>Dot size: <input type="range" min="0.5" max="2.0" value="0" step="0.1"
+        oninput="document.querySelector('.halftone').style.setProperty('--dotscale', this.value);">
+    </label>
+    <label>Contrast: <input type="range" min="50" max="500" value="100" step="10"
+        oninput="document.querySelector('.halftone').style.setProperty('--dotcontrast', this.value + '%');">
+    </label>
+    <label>Brightness: <input type="range" min="0.1" max="2" value="0.25" step="0.05"
+        oninput="document.querySelector('.halftone').style.setProperty('--dotbrightness', this.value);">
+    </label>
+    <label>Blur: <input type="range" min="0" max="10" value="2" step="1"
+        oninput="document.querySelector('.halftone').style.setProperty('--dotblur', this.value + 'px');">
+    </label>
+  </fieldset>
+  <div class="halftone" data-dotscale="1">
+    <img id="img" src="butterfly.jpg">
+  </div>
+  </body>
+</html>
