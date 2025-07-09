@@ -54,18 +54,18 @@
       }
     </style>
     <script>
-  upload.addEventListener("input", e => {
-    const file = e.target.files[0];
+  function onFileUpload(input) {
+    const file = input.files[0];
     if (!file) return;
     img.src = URL.createObjectURL(file);
-  });
+  }
 </script>
   </head>
   <body>
   <!-- https://marco.blog/en/2018/02/pure-css-halftone-effect/ -->
   <fieldset>
     <legend>Shoresh Halftone</legend>
-    <input type="file" id="upload" name="avatar" accept="image/png, image/jpeg" />
+    <input type="file" id="upload" name="avatar" accept="image/png, image/jpeg" oninput="onFileUpload(this)"/>
     <label>Dot size: <input type="range" min="0.5" max="2.0" value="0" step="0.1"
         oninput="document.querySelector('.halftone').style.setProperty('--dotscale', this.value);">
     </label>
